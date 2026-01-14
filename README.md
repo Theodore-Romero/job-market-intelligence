@@ -9,11 +9,11 @@ An automated analytics system that collects job postings daily, extracts in-dema
 
 ---
 
-## 🔗 Live Dashboard
+## 🔗 Live Dashboards
 
-**[View on Tableau Public →](https://public.tableau.com/app/profile/theodoreromero)**
+Job Market Key Metrics Dashboard:
+**[View on Tableau Public →](https://public.tableau.com/app/profile/theodore.romero8696/viz/Job-Market-Metrics/MarketOverview)**
 
-*Link will be added when dashboard is published*
 
 ---
 
