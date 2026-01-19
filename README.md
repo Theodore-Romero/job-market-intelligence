@@ -1,7 +1,6 @@
-
 # Job Market Intelligence Dashboard
 
-An automated analytics system that collects job postings daily, extracts in-demand skills, and visualizes market trends through an interactive Tableau dashboard.
+An automated analytics system that collects job postings daily, aggregates market metrics, extracts in-demand skills, and visualizes trends through interactive Tableau dashboards.
 
 ![Tableau](https://img.shields.io/badge/Tableau-E97627?style=flat&logo=tableau&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat&logo=postgresql&logoColor=white)
@@ -11,37 +10,50 @@ An automated analytics system that collects job postings daily, extracts in-dema
 
 ## 🔗 Live Dashboards
 
-Job Market Key Metrics Dashboard:
-**[View on Tableau Public →](https://public.tableau.com/app/profile/theodore.romero8696/viz/Job-Market-Metrics/MarketOverview)**
+**Job Market Overview Dashboard**  
+👉 **[View on Tableau Public →](https://public.tableau.com/app/profile/theodore.romero8696/viz/Job-Market-Metrics/MarketOverview).**
 
+**Skill Demand Dashboard**  
+👉 **[View on Tableau Public →](https://public.tableau.com/app/profile/theodore.romero8696/viz/SkillsDemand/SkillDemand?publish=yes)**
+
+**Salary Insights Dashboard**  
+👉 **[View on Tableau Public →](https://public.tableau.com/app/profile/theodore.romero8696/viz/Salary-Insights/SalaryInsights?publish=yes)**
 
 ---
 
 ## 📊 Overview
 
-This project answers the question: **What skills should I learn to maximize my job prospects in data analytics?**
+This project answers the question:
+
+**What skills, salary ranges, and work arrangements define the current data & analytics job market?**
 
 The system automatically:
-- Collects 100+ job postings daily from multiple APIs
-- Extracts skills mentioned in job descriptions
-- Calculates salary trends by role, location, and skill
-- Visualizes insights in a 6-page interactive dashboard
+- Collects job postings daily from multiple sources
+- Aggregates job counts, salary metrics, and work-type breakdowns
+- Extracts and categorizes skills from job descriptions
+- Publishes live dashboards that update as new data arrives
+
+Rather than a static report, this project functions as a **continuously updating job market intelligence platform**.
 
 ---
 
 ## 🔍 Key Insights
 
-- SQL appears in **78%** of data analyst job postings
-- Python skills correlate with a **15% salary premium**
-- Remote roles represent **45%** of the market
-- Top hiring companies and their salary ranges
+Insights below are drawn directly from the live dashboards:
+
+- **Job postings are steadily increasing over time**, indicating sustained hiring demand
+- **Remote roles dominate the dataset**, accounting for over **96%** of tracked positions
+- **Programming, tools, and soft skills** are the most frequently mentioned skill categories
+- **R, Go, and communication skills** rank among the most in-demand individual skills
+- **Salary distribution is right-skewed**, with most roles clustered in lower-to-mid ranges and fewer high-paying outliers
+- **Significant salary variation exists by location**, with several cities exceeding the overall average salary benchmark
 
 ---
 
 ## 🛠️ Tech Stack
 
 | Component | Technology |
-|-----------|------------|
+|---------|------------|
 | Database | PostgreSQL (Supabase) |
 | Data Pipeline | N8N (workflow automation) |
 | Data Sources | Adzuna API, Indeed RSS |
@@ -51,50 +63,77 @@ The system automatically:
 ---
 
 ## 📐 Architecture
+'
+Adzuna API ─┐
 
+                 ├──▶ N8N Workflows ───▶ PostgreSQL (Supabase) ───▶ Google Sheets ───▶ Tableau Public
+            
+Indeed RSS ─┘                       └──▶ Email Alerts (Job Match Notifications)
+                    
 
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ │ Adzuna │ │ │ │ │ │ │ │ API │────▶│ N8N │────▶│ PostgreSQL │────▶│ Tableau │ │ │ │ Workflows │ │ Database │ │ Dashboard │ │ Indeed │ │ │ │ │ │ │ │ RSS │────▶│ │ │ │ │ │ └──────────────┘ └──────────────┘ └──────────────┘ └──────────────┘ │ ▼ ┌──────────────┐ │ Email │ │ Alerts │ └──────────────┘
 
 ---
 
 ## 📁 Repository Structure
 
+job-market-intelligence/
 
-job-market-intelligence/ ├── README.md ├── database/ │ ├── schema.sql │ ├── seed-data.sql │ └── views.sql ├── n8n-workflows/ │ ├── daily-job-collection.json │ ├── daily-aggregation.json │ └── job-match-alerts.json ├── screenshots/ │ ├── dashboard-overview.png │ ├── skills-demand.png │ ├── salary-analysis.png │ └── architecture.png └── docs/ └── setup-guide.md
+├── README.md
+
+
+├── database/
+
+│ ├── schema.sql
+
+│ ├── seed-data.sql
+
+│ └── views.sql
+
+
+├── n8n-workflows/
+
+│ ├── daily-job-collection.json
+
+│ ├── daily-aggregation.json
+
+│ └── job-match-alerts.json
+
+
+├── screenshots/
+
+│ ├── market-overview.png
+
+│ ├── skills-demand.png
+
+│ ├── salary-insights.png
+
+│ └── architecture.png
+
+
+└── docs/
+
+└── setup-guide.md
+
 
 ---
 
 ## 📈 Dashboard Pages
 
 ### 1. Market Overview
-- Total job postings, average salary, remote percentage
-- Jobs over time trend
-- Distribution by category
+- Total job postings KPI
+- New jobs added today
+- Remote vs on-site percentage breakdown
+- Jobs over time with growth trend reference
 
 ### 2. Skills Demand
-- Top 15 skills by frequency
-- Skills trend over time
-- Skills by category
+- Top skills by job mention frequency
+- Skill demand grouped by category
+- Comparison of technical vs soft skills
 
-### 3. Salary Analysis
+### 3. Salary Insights
 - Salary distribution histogram
-- Salary by location
-- Salary by experience level
-
-### 4. Geographic View
-- Jobs by city/state
-- Remote vs on-site breakdown
-- Regional salary comparison
-
-### 5. Company Insights
-- Top hiring companies
-- Company salary ranges
-- Hiring trends
-
-### 6. Personal Tracker
-- Jobs matching my criteria
-- Application pipeline
-- New matches this week
+- Average salary by location
+- Average salary reference line for comparison
 
 ---
 
@@ -103,47 +142,47 @@ job-market-intelligence/ ├── README.md ├── database/ │ ├── s
 ### Prerequisites
 - Supabase account (free tier)
 - N8N account (cloud or self-hosted)
-- Tableau Public account (free)
-- Adzuna API key (free)
+- Tableau Public account
+- Adzuna API key
 
 ### Step 1: Database Setup
 1. Create a new Supabase project
-2. Run `database/schema.sql` in SQL Editor
-3. Run `database/seed-data.sql` for initial data
-4. Run `database/views.sql` for analytics views
+2. Run `database/schema.sql` in the SQL editor
+3. Run `database/seed-data.sql`
+4. Run `database/views.sql`
 
 ### Step 2: N8N Workflows
-1. Import workflows from `n8n-workflows/` folder
-2. Update PostgreSQL credentials
-3. Update API keys
-4. Activate workflows
+1. Import workflows from the `n8n-workflows/` folder
+2. Configure PostgreSQL credentials
+3. Add API keys
+4. Activate scheduled workflows
 
 ### Step 3: Tableau Connection
 1. Open Tableau Public Desktop
 2. Connect to Google Sheets (exported from N8N)
 3. Build visualizations
-4. Publish to Tableau Public
+4. Publish dashboards to Tableau Public
 
 ---
 
 ## 🧠 Skills Demonstrated
 
-- **SQL**: Complex queries, window functions, CTEs, triggers, views
-- **Data Engineering**: API integration, ETL pipelines, workflow automation
-- **Data Visualization**: Interactive dashboards, storytelling with data
-- **Database Design**: Normalized schema, indexing, query optimization
+- **SQL**: Aggregations, views, joins, and analytical queries
+- **Data Engineering**: Automated ETL pipelines and scheduled workflows
+- **Analytics Engineering**: Metric definition, daily snapshots, trend analysis
+- **Data Visualization**: KPI design, distributions, comparative analysis
+- **System Design**: End-to-end data flow from ingestion to visualization
 
 ---
 
 ## 📬 Contact
 
-**Theodore Romero**
-- LinkedIn: [linkedin.com/in/theodoreromero](https://linkedin.com/in/theodoreromero)
-- Email: theodore.romero@email.com
+**Theodore Romero**  
+- LinkedIn: https://linkedin.com/in/theodoreromero  
+- Email: p.theodore.romero@gmail.com
 
 ---
 
 ## 📄 License
 
 This project is open source and available under the MIT License.
-
