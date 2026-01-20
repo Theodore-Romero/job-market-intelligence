@@ -1,0 +1,136 @@
+{
+  "name": "job-match-alerts",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 8
+            }
+          ]
+        }
+      },
+      "name": "Cron Trigger at 8AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        112
+      ],
+      "id": "8184c068-e0a1-41bd-91a2-703c1d036224"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM v_new_jobs_this_week \nWHERE collected_at >= (NOW() - INTERVAL '24 hours')\nORDER BY salary_min DESC NULLS LAST\nLIMIT 10;",
+        "additionalFields": {}
+      },
+      "name": "Get New Top Jobs",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        112
+      ],
+      "id": "88454a41-666c-488e-90c4-5292c3b49a45",
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $items().length }}",
+              "operation": "larger"
+            }
+          ]
+        }
+      },
+      "name": "If Jobs Found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        112
+      ],
+      "id": "06de6f54-2475-4dd7-a6c8-2c8e2ce4d85e"
+    },
+    {
+      "parameters": {
+        "fromEmail": "kodabadok@gmal.com",
+        "toEmail": "p.theodore.romero@gmail.com",
+        "subject": "={{ $items().length }} New Job Matches Found",
+        "text": "={{ $json.title }} at {{ $json.company_name }}",
+        "html": "=<h2>Daily Job Matches</h2>\n<ul>\n{{ $items().map(item => `<li><strong>${item.json.title}</strong> at ${item.json.company_name} - <a href=\"${item.json.source_url}\">Link</a></li>`).join('') }}\n</ul>",
+        "options": {}
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        16,
+        0
+      ],
+      "id": "7310ca10-aa72-49b3-a1cf-a4a8ff04175a",
+      "credentials": {
+        "smtp": {
+          "id": "IhcLicPfjIkxGKDh",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron Trigger at 8AM": {
+      "main": [
+        [
+          {
+            "node": "Get New Top Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get New Top Jobs": {
+      "main": [
+        [
+          {
+            "node": "If Jobs Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Jobs Found": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "86ff2e11-190e-43e7-aa76-93a70b7fcf8f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ae5362bd806bc4074679f8acb85824d76526eabb92a896f10ca95b977f1158f"
+  },
+  "id": "6Bw8cMZbJsgyUc39",
+  "tags": []
+}
