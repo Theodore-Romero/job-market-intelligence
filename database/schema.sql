@@ -1,6 +1,8 @@
 -- ============================================
 -- JOB MARKET INTELLIGENCE DASHBOARD
 -- Database Schema
+-- This schema represents the logical data model used for analytics
+-- and may omit platform-specific metadata tables.
 -- ============================================
 -- Run this file first in Supabase SQL Editor
 -- ============================================
