@@ -1,0 +1,70 @@
+{
+  "name": "daily-aggregation",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 7
+            }
+          ]
+        }
+      },
+      "name": "Cron Trigger at 7AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "462cc54f-6a23-4837-9357-746c6e29d3a3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT calculate_daily_metrics(CURRENT_DATE);",
+        "additionalFields": {}
+      },
+      "name": "Calculate Metrics",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "33c1f5ef-dadb-4352-a456-7152b7b49fd1",
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron Trigger at 7AM": {
+      "main": [
+        [
+          {
+            "node": "Calculate Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e39412bb-0d48-49be-9d12-1ee5c4a10948",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ae5362bd806bc4074679f8acb85824d76526eabb92a896f10ca95b977f1158f"
+  },
+  "id": "tS1hn58dySB6LFvF",
+  "tags": []
+}

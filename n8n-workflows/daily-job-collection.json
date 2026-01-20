@@ -1,0 +1,253 @@
+{
+  "name": "daily-job-collection",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 6,
+              "minute": 30
+            }
+          ]
+        }
+      },
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        192
+      ],
+      "id": "7ba4ea4b-cdec-48d4-a7b8-b4ab743fe453"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { json: { term: 'Data Analyst' } },\n  { json: { term: 'Business Analyst' } },\n  { json: { term: 'Business Intelligence' } },\n  { json: { term: 'Data Scientist' } },\n  { json: { term: 'Analytics Engineer' } }\n];"
+      },
+      "name": "Search Terms",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        192
+      ],
+      "id": "d6665483-6609-4c50-ad79-5f4b02dfbb15"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        192
+      ],
+      "id": "81b12cde-60f4-4cbf-a2c6-ab75c33c6c05"
+    },
+    {
+      "parameters": {
+        "url": "https://api.adzuna.com/v1/api/jobs/us/search/1",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "app_id",
+              "value": "17c0138f"
+            },
+            {
+              "name": "app_key",
+              "value": "abf669ecf6ba30fd92fa9be81238483b"
+            },
+            {
+              "name": "what_and",
+              "value": "={{ $json.term }}"
+            },
+            {
+              "name": "category",
+              "value": "it-jobs"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Adzuna API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        192
+      ],
+      "id": "8687fba5-7d41-47d0-bf6d-3df67a8aabd9"
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        576,
+        192
+      ],
+      "id": "41ad84a2-818e-4f01-a6fa-0833258da933",
+      "webhookId": "30ffbe4f-c20e-4732-9067-cc21a545bcc1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "name": "Item Lists",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        192
+      ],
+      "id": "fd9257ad-a6d4-4d9e-89d1-f125fa508958"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Map Adzuna fields to our DB schema\nconst root = $json.results || $json;\n\nreturn {\n  title: root.title,\n  description: root.description,\n  company_name: root.company ? root.company.display_name : null,\n  city: (root.location && root.location.area) ? (root.location.area[3] || root.location.area[1]) : null,\n  state: (root.location && root.location.area) ? root.location.area[1] : null,\n  country: 'United States',\n  is_remote: (root.description && root.description.toLowerCase().includes('remote')) || (root.title && root.title.toLowerCase().includes('remote')),\n  salary_min: root.salary_min,\n  salary_max: root.salary_max,\n  source_url: root.redirect_url,\n  external_id: root.id,\n  posted_date: root.created ? root.created.split('T')[0] : new Date().toISOString().split('T')[0]\n};"
+      },
+      "name": "Transform Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        176,
+        192
+      ],
+      "id": "0e963f18-8930-45a2-ba34-fadfe79478df"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=WITH comp AS (\n  SELECT get_or_create_company('{{ ($json.company_name || '').replace(/'/g, \"''\") }}') as id\n),\nloc AS (\n  SELECT get_or_create_location('{{ ($json.city || '').replace(/'/g, \"''\") }}', '{{ ($json.state || '').replace(/'/g, \"''\") }}', 'United States', {{ $json.is_remote || false }}) as id\n)\nINSERT INTO job_postings (\n  external_id, \n  title, \n  description, \n  company_id, \n  location_id, \n  company_name, \n  location_raw, \n  is_remote, \n  salary_min, \n  salary_max, \n  source_url, \n  source, \n  posted_date\n)\nVALUES (\n  '{{ ($json.external_id || '').replace(/'/g, \"''\") }}', \n  '{{ ($json.title || '').replace(/'/g, \"''\") }}', \n  '{{ ($json.description || '').replace(/'/g, \"''\") }}', \n  (SELECT id FROM comp), \n  (SELECT id FROM loc), \n  '{{ ($json.company_name || '').replace(/'/g, \"''\") }}', \n  CONCAT('{{ ($json.city || '').replace(/'/g, \"''\") }}', ', ', '{{ ($json.state || '').replace(/'/g, \"''\") }}'), \n  {{ $json.is_remote || false }}, \n  {{ $json.salary_min || 'NULL' }}, \n  {{ $json.salary_max || 'NULL' }}, \n  '{{ ($json.source_url || '').replace(/'/g, \"''\") }}', \n  'Adzuna', \n  '{{ $json.posted_date }}'::date\n)\nON CONFLICT (external_id) DO UPDATE SET\n  salary_min = EXCLUDED.salary_min,\n  salary_max = EXCLUDED.salary_max,\n  updated_at = NOW();",
+        "additionalFields": {}
+      },
+      "name": "Postgres Insert1",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        352,
+        192
+      ],
+      "id": "c0524dcb-e916-4069-a317-16538d368a55",
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search Terms",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Terms": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Adzuna API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adzuna API": {
+      "main": [
+        [
+          {
+            "node": "Item Lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item Lists": {
+      "main": [
+        [
+          {
+            "node": "Transform Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Data": {
+      "main": [
+        [
+          {
+            "node": "Postgres Insert1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Insert1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6fac422e-ee29-4b49-ae32-6cf6626831d5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ae5362bd806bc4074679f8acb85824d76526eabb92a896f10ca95b977f1158f"
+  },
+  "id": "8EFalFFTWYm42DGW",
+  "tags": []
+}

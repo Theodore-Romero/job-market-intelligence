@@ -1,0 +1,145 @@
+{
+  "name": "wework-rss-collection",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 6
+            }
+          ]
+        }
+      },
+      "name": "Cron Trigger1",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -144
+      ],
+      "id": "b74f5dd0-ab47-4ed3-93e4-f09fdf692b47"
+    },
+    {
+      "parameters": {
+        "url": "https://weworkremotely.com/remote-jobs.rss",
+        "options": {}
+      },
+      "name": "RSS Feed Read1",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -144
+      ],
+      "id": "89160387-0239-4007-a618-db427be9e335"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize WeWorkRemotely RSS items to DB schema (runs once for all items)\nconst inputItems = $input.all();\n\nfunction normalize(item, idx) {\n  const titleRaw = item.json.title ?? '';\n  const snippet = item.json.contentSnippet ?? '';\n  const content = item.json.content ?? '';\n  const guid = item.json.guid ?? item.json.id ?? '';\n  const link = item.json.link ?? '';\n\n  // Title format often: \"Company: Role\"\n  let title = titleRaw.toString();\n  let company = item.json.creator ?? item.json.author ?? '';\n\n  if (title.includes(': ')) {\n    const parts = title.split(': ');\n    company = (parts[0] || company).toString().trim();\n    title = parts.slice(1).join(': ').toString().trim();\n  }\n\n  const company_name = (company || '').toString().trim() || 'Unknown';\n  const description = (snippet || content || '').toString();\n  const source_url = (link || guid || '').toString();\n\n  // pubDate as YYYY-MM-DD if parseable\n  let pubDate = null;\n  try {\n    pubDate = item.json.pubDate ? new Date(item.json.pubDate).toISOString().split('T')[0] : null;\n  } catch (e) {\n    pubDate = null;\n  }\n\n  // external_id: prefer guid; then link; else derive a stable-ish fallback\n  const external_id =\n    (guid || link || `${titleRaw}-${pubDate || ''}-${idx}`).toString();\n\n  return {\n    external_id,\n    title: title || titleRaw || `Untitled-${idx}`,\n    description,\n    company_name,\n    location_raw: 'Remote',\n    source_url,\n    pubDate,\n  };\n}\n\nconst out = [];\nlet idx = 0;\nfor (const item of inputItems) {\n  out.push({ json: normalize(item, idx) });\n  idx += 1;\n}\n\nreturn out;\n"
+      },
+      "name": "Normalize RSS Data1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        576,
+        -144
+      ],
+      "id": "41e2a181-22ac-446d-9d59-c26857bf0489"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ $json.sql }}\n",
+        "additionalFields": {
+          "queryParams": "="
+        }
+      },
+      "name": "Postgres Insert1",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        976,
+        -144
+      ],
+      "id": "a6cec97a-0428-4ca1-98b3-f43e700f96dd",
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const esc = (v) =>\n  (v ?? \"\")\n    .toString()\n    .replace(/\\\\/g, \"\\\\\\\\\")\n    .replace(/'/g, \"''\")\n    .replace(/\\r/g, \"\");\n\nconst j = $json.item ?? $json.data ?? $json;\n\nconst company = esc(j.company_name ?? j.company) || \"Unknown\";\nconst externalId =\n  esc(j.external_id ?? j.guid ?? j.link ?? j.id) ||\n  `missing-${$execution.id}-${$itemIndex}`;\nconst title = esc(j.title ?? j.job_title ?? j.raw_title) || \"[untitled]\";\nconst description = esc(\n  j[\"content:encoded\"] ?? j.content ?? j.description ?? j.summary ?? \"\"\n);\nconst locationRaw = esc(j.location_raw ?? j.location) || \"Remote\";\nconst pubDate = esc(j.pubDate);\n\nconst sql = `\nWITH comp AS (\n  SELECT public.get_or_create_company('${company}') AS company_id\n),\nloc AS (\n  SELECT public.get_or_create_location('Remote','Remote','United States',true) AS location_id\n)\nINSERT INTO public.job_postings (\n  external_id,\n  title,\n  description,\n  company_id,\n  location_id,\n  company_name,\n  location_raw,\n  is_remote,\n  posted_date\n)\nVALUES (\n  '${externalId}',\n  '${title}',\n  '${description}',\n  (SELECT company_id FROM comp),\n  (SELECT location_id FROM loc),\n  '${company}',\n  '${locationRaw}',\n  true,\n  '${pubDate}'\n)\nON CONFLICT (external_id) DO UPDATE\nSET\n  title = EXCLUDED.title,\n  description = EXCLUDED.description,\n  company_id = EXCLUDED.company_id,\n  location_id = EXCLUDED.location_id,\n  company_name = EXCLUDED.company_name,\n  location_raw = EXCLUDED.location_raw,\n  is_remote = EXCLUDED.is_remote\nRETURNING job_id, external_id, title\n`.trim();\n\n/** 🔴 THIS is the important change */\nreturn { json: { sql } };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -144
+      ],
+      "id": "55c99bfa-9e0d-4fc2-89bc-62e49d8e0f9d",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron Trigger1": {
+      "main": [
+        [
+          {
+            "node": "RSS Feed Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Read1": {
+      "main": [
+        [
+          {
+            "node": "Normalize RSS Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize RSS Data1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Postgres Insert1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "54c62b97-df51-4d98-8bbf-1f1f9f54b7f1",
+  "meta": {
+    "instanceId": "1ae5362bd806bc4074679f8acb85824d76526eabb92a896f10ca95b977f1158f"
+  },
+  "id": "ed0mg27eLnKSI7xo",
+  "tags": []
+}

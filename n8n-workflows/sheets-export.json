@@ -1,0 +1,942 @@
+{
+  "name": "sheets-export",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 8,
+              "minute": 15
+            }
+          ]
+        }
+      },
+      "id": "f9d2f1a3-a200-4244-9dbc-b367ea6d27a9",
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM v_daily_metrics\nORDER BY metric_date;",
+        "options": {}
+      },
+      "id": "1fe09e89-052f-47e3-b58a-87a7e5faa560",
+      "name": "Postgres: v_daily_metrics",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        64
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "=1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "=Job Market Metrics",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "metric_date",
+              "displayName": "metric_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_jobs",
+              "displayName": "total_jobs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "new_jobs_today",
+              "displayName": "new_jobs_today",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "remote_jobs",
+              "displayName": "remote_jobs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hybrid_jobs",
+              "displayName": "hybrid_jobs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "onsite_jobs",
+              "displayName": "onsite_jobs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_salary_min",
+              "displayName": "avg_salary_min",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_salary_max",
+              "displayName": "avg_salary_max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_salary_mid",
+              "displayName": "avg_salary_mid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "unique_companies",
+              "displayName": "unique_companies",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "remote_percentage",
+              "displayName": "remote_percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hybrid_percentage",
+              "displayName": "hybrid_percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "onsite_percentage",
+              "displayName": "onsite_percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "wow_change",
+              "displayName": "wow_change",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "day_of_week",
+              "displayName": "day_of_week",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "day_number",
+              "displayName": "day_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "year_month",
+              "displayName": "year_month",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "month_name",
+              "displayName": "month_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1de8ca92-61ea-4cc7-acf8-ade4bf952b71",
+      "name": "Sheets Append: Daily Metrics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        256,
+        80
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM v_skills_frequency\nORDER BY skill_id DESC;",
+        "options": {}
+      },
+      "id": "647b994a-3e83-46e0-a572-d5798b50c0c1",
+      "name": "Postgres: v_skills_frequency",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        256
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM public.v_salary_by_location\nORDER BY avg_salary_mid DESC NULLS LAST;",
+        "options": {}
+      },
+      "id": "ca03da20-1033-481b-911f-893640f259a0",
+      "name": "Postgres: v_salary_by_location",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        0,
+        480
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM v_company_hiring\nORDER BY postings_last_7_days DESC;",
+        "options": {}
+      },
+      "id": "181b9e78-a6d2-484e-8c83-9b7bdda91f05",
+      "name": "Postgres: v_company_hiring",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        0,
+        736
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "Fcv2gkP6F01pdfR0",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Skills Frequency",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Column 1",
+              "displayName": "Column 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 2",
+              "displayName": "Column 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 3",
+              "displayName": "Column 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 4",
+              "displayName": "Column 4",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Column 5",
+              "displayName": "Column 5",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skill_id",
+              "displayName": "skill_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skill_name",
+              "displayName": "skill_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skill_category",
+              "displayName": "skill_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "job_count",
+              "displayName": "job_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "percentage",
+              "displayName": "percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "8b34f3e3-42f1-4051-b59b-393b511b66ef",
+      "name": "Sheets Append: Skills Frequency",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        256,
+        272
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Salary by Location",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "success"
+          ],
+          "schema": [
+            {
+              "id": "success",
+              "displayName": "success",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "6361ccf4-4316-4484-b8e8-4cd3dbc6895e",
+      "name": "Sheets Append: Salary by Location",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        256,
+        496
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Company Hiring",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_name",
+              "displayName": "company_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_postings",
+              "displayName": "total_postings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "postings_last_7_days",
+              "displayName": "postings_last_7_days",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "postings_last_30_days",
+              "displayName": "postings_last_30_days",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_salary_min",
+              "displayName": "avg_salary_min",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_salary_max",
+              "displayName": "avg_salary_max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "avg_salary_mid",
+              "displayName": "avg_salary_mid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "remote_positions",
+              "displayName": "remote_positions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "remote_percentage",
+              "displayName": "remote_percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9ddffd93-d70c-48f7-8b55-34cb501790f4",
+      "name": "Sheets Append: Company Hiring",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        256,
+        736
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1094831423,
+          "mode": "list",
+          "cachedResultName": "Job Market Metrics",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik/edit#gid=1094831423"
+        },
+        "clear": "specificRange",
+        "range": "A2:Z"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -272,
+        112
+      ],
+      "id": "2e164066-1742-4f8f-a3f2-f290546df0fd",
+      "name": "Clear sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1038813483,
+          "mode": "list",
+          "cachedResultName": "Skills Frequency",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik/edit#gid=1038813483"
+        },
+        "clear": "specificRange",
+        "range": "A2:Z"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -256,
+        320
+      ],
+      "id": "33d04910-6b24-406b-86d9-4c93e03e678f",
+      "name": "Clear sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1421138880,
+          "mode": "list",
+          "cachedResultName": "Salary by Location",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik/edit#gid=1421138880"
+        },
+        "clear": "specificRange",
+        "range": "A2:Z"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -272,
+        544
+      ],
+      "id": "6fb1e646-94b5-43b3-9e84-25d0d84ede7d",
+      "name": "Clear sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 983453650,
+          "mode": "list",
+          "cachedResultName": "Company Hiring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lCTQcyBgmtkXcORZNhv9fakc58U1HWZguQHn0Ub5cik/edit#gid=983453650"
+        },
+        "clear": "specificRange",
+        "range": "A2:Z"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -256,
+        768
+      ],
+      "id": "15937457-88ba-4950-9afc-6a5ccebe8d0e",
+      "name": "Clear sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "2HZP9pyP9MzZh6oE",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          {
+            "node": "Clear sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Clear sheet1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Clear sheet2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Clear sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres: v_daily_metrics": {
+      "main": [
+        [
+          {
+            "node": "Sheets Append: Daily Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres: v_skills_frequency": {
+      "main": [
+        [
+          {
+            "node": "Sheets Append: Skills Frequency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres: v_salary_by_location": {
+      "main": [
+        [
+          {
+            "node": "Sheets Append: Salary by Location",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres: v_company_hiring": {
+      "main": [
+        [
+          {
+            "node": "Sheets Append: Company Hiring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheets Append: Skills Frequency": {
+      "main": [
+        []
+      ]
+    },
+    "Clear sheet": {
+      "main": [
+        [
+          {
+            "node": "Postgres: v_daily_metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet1": {
+      "main": [
+        [
+          {
+            "node": "Postgres: v_skills_frequency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet2": {
+      "main": [
+        [
+          {
+            "node": "Postgres: v_salary_by_location",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear sheet3": {
+      "main": [
+        [
+          {
+            "node": "Postgres: v_company_hiring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b22f7877-5104-44b6-9ece-e4124a41ed2e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ae5362bd806bc4074679f8acb85824d76526eabb92a896f10ca95b977f1158f"
+  },
+  "id": "SiIzmPyb8SUkzxVU",
+  "tags": []
+}
