@@ -1,6 +1,9 @@
 -- ============================================
 -- JOB MARKET INTELLIGENCE DASHBOARD
 -- Analytics Views
+-- Note:
+-- This file contains both views currently used in Tableau dashboards
+-- and additional analytical views created for exploration and future expansion.
 -- ============================================
 -- Run this file AFTER schema.sql and seed-data.sql
 -- ============================================
