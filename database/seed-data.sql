@@ -1,6 +1,8 @@
 -- ============================================
 -- JOB MARKET INTELLIGENCE DASHBOARD
 -- Seed Data
+-- This seed data represents a controlled skill vocabulary.
+-- Not all skills will appear in the dataset at any given time.
 -- ============================================
 -- Run this file AFTER schema.sql
 -- ============================================
