@@ -98,16 +98,24 @@ job-market-intelligence/
 
 │ └── job-match-alerts.json
 
+│ └── sheets-export.json
+
+│ └── wework-rss-collection.json
+
 
 ├── screenshots/
 
-│ ├── market-overview.png
+│ ├── job-market-overview.png
 
 │ ├── skills-demand.png
 
 │ ├── salary-insights.png
 
 │ └── architecture.png
+
+│ └── daily-job-collection.png
+
+│ └── job-market-overview.png
 
 
 └── docs/
